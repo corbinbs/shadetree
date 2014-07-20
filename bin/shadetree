@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+from shadetree.obd.scanner import OBDScanner
+
+
+def vehicle_info():
+
+    with OBDScanner() as obd:
+        print('ELM version'.format(obd.elm_version))
+        print('Vehicle Identification Number (VIN): {0}'.format(obd.vehicle_id_number()))
+        print('Engine Control Unit (ECU) Name: {0}'.format(obd.ecu_name()))
+        print('Battery voltage: {0}'.format(obd.battery_voltage()))
+        print('Fuel type: {0}'.format(obd.fuel_type()))
+        print('Coolant temp: {0}'.format(obd.current_engine_coolant_temperature()))
+        print('Oil temp: {0}'.format(obd.current_engine_oil_temperature()))
+        print('Engine RPM: {0}'.format(obd.current_engine_rpm()))
+
+if __name__ == "__main__":
+    vehicle_info()
