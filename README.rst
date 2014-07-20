@@ -1,4 +1,4 @@
-|build| |version| |wheel|
+|version| |wheel|
 
 ShadeTree OBD
 =============
@@ -52,7 +52,7 @@ See LICENSE_ for details.
 .. |version| image:: https://badge.fury.io/py/shadetree.svg
     :target: https://pypi.python.org/pypi/shadetree/
 
-.. |build| image:: https://api.travis-ci.org/hub-ology/shadetree.svg
+.. .. |build| image:: https://api.travis-ci.org/hub-ology/shadetree.svg
     :target: https://travis-ci.org/hub-ology/shadetree
 
 .. |wheel| image:: https://pypip.in/wheel/shadetree/badge.png
