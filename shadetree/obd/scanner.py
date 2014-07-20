@@ -39,9 +39,10 @@ class OBDScanner(object):
     def __enter__(self):
         """
             Sets up the OBDScanner to work as a ContextManager
-            :return:
+            :return: this OBDScanner instance for use within the context
         """
         self.connect()
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.disconnect()
