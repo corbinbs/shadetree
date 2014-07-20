@@ -68,7 +68,7 @@ class OBDScanner(object):
         """
         self.send(commands.CURRENT_ENGINE_COOLANT_TEMP_COMMAND)
         response = self.receive()
-        response_data = response.split(' ')[-1]
+        response_data = response.strip().split(' ')[-1]
         #The data returned in the OBD response is in hexadecimal with a zero offset to account for negative temperatures
         #To return the current temperature in degrees Celsius, we must first convert to decimal and then subtract 40
         #to account for the zero offset.
@@ -81,7 +81,7 @@ class OBDScanner(object):
         """
         self.send(commands.CURRENT_ENGINE_OIL_TEMP_COMMAND)
         response = self.receive()
-        response_data = response.split(' ')[-1]
+        response_data = response.strip().split(' ')[-1]
         #The data returned in the OBD response is in hexadecimal with a zero offset to account for negative temperatures
         #To return the current temperature in degrees Celsius, we must first convert to decimal and then subtract 40
         #to account for the zero offset.
@@ -94,9 +94,9 @@ class OBDScanner(object):
         """
         self.send(commands.CURRENT_ENGINE_RPM)
         response = self.receive()
-        response_data = response.split(' ')
-        if len(response_data) == 4:
-            rpm = (int(response.split(' ')[-2], 16) * 256 + int(response.split(' ')[-1], 16)) / 4
+        response_data = response.strip().split(' ')
+        if len(response_data) >= 2:
+            rpm = (int(response_data[-2], 16) * 256 + int(response_data[-1], 16)) / 4
             return rpm
         else:
             return None
@@ -116,7 +116,7 @@ class OBDScanner(object):
         """
         self.send(commands.FUEL_TYPE_COMMAND)
         response = self.receive()
-        response_data = response.split(' ')[-1]
+        response_data = response.strip().split(' ')[-1]
         return FUEL_TYPE_DESCRIPTION.get(int(response_data, 16))
 
     def echo_off(self):
@@ -143,6 +143,7 @@ class OBDScanner(object):
             :return:
         """
         self.reset()
+        self.echo_off()
         self.send(elm327.SELECT_PROTOCOL_COMMAND)
         self.receive()
 
@@ -152,6 +153,8 @@ class OBDScanner(object):
             :return: the data returned by the OBD-II Scanner
         """
         if self.connected:
+            #Wait a second for data to become available
+            time.sleep(1)
             retry_number = 0
             value = ""
             while True:
@@ -183,7 +186,6 @@ class OBDScanner(object):
         """
         if self.connected:
             self.send(elm327.RESET_COMMAND)
-            time.sleep(1)
             self.elm_version = self.receive()
 
     def send(self, data):
