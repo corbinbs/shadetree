@@ -8,6 +8,17 @@ from shadetree.obd import commands
 from shadetree.obd.fuel_type import FUEL_TYPE_DESCRIPTION
 
 
+def decode_bitwise_pids(hex_string):
+    """
+        Determine supported PIDs based on the supplied hexadecimal string
+        :param hex_string: a hexadecimal string representing bitwise encoded PID support
+        :return: a dictionary of PID number: boolean pairs that indicate whether or not a PID is supported
+    """
+    clean_hex = hex_string.replace(' ', '')
+    bits = bin(int(clean_hex, 16))[2:].zfill(32)
+    return dict((hex(i+1)[2:].zfill(2).upper(), True if value == '1' else False) for i, value in enumerate(bits))
+
+
 class OBDScanner(object):
     """
         ELM327 OBD-II Scanner
@@ -24,6 +35,9 @@ class OBDScanner(object):
         self.serial_port = None
         self.connected = False
         self.elm_version = ""
+        self.obd_protocol = ""
+        #Time to wait (in seconds) before attempting to receive data after an OBD command has been issued
+        self.receive_wait_time = 0.5
 
     def connect(self):
         """
@@ -105,7 +119,7 @@ class OBDScanner(object):
     def ecu_name(self):
         """
             Returns the name of the Engine Control Unit (ECU)
-            :return:
+            :return: the name of the ECU (if available)
         """
         self.send(commands.ECU_NAME_COMMAND)
         return self.receive()
@@ -145,8 +159,10 @@ class OBDScanner(object):
         """
         self.reset()
         self.echo_off()
-        self.send(elm327.SELECT_PROTOCOL_COMMAND)
+        self.send(elm327.SET_PROTOCOL_AUTO_COMMAND)
         self.receive()
+        self.send(elm327.DESCRIBE_PROTOCOL_COMMAND)
+        self.obd_protocol = self.receive()
 
     def receive(self):
         """
@@ -154,8 +170,8 @@ class OBDScanner(object):
             :return: the data returned by the OBD-II Scanner
         """
         if self.connected:
-            #Wait a second for data to become available
-            time.sleep(1)
+            #Wait for data to become available
+            time.sleep(self.receive_wait_time)
             retry_number = 0
             value = ""
             while True:
@@ -199,6 +215,11 @@ class OBDScanner(object):
             self.serial_port.flushOutput()
             self.serial_port.flushInput()
             self.serial_port.write(data + "\r\n")
+
+    def supported_pids(self):
+        self.send(commands.CURRENT_MODE_PIDS_SUPPORTED_COMMAND)
+        response = self.receive()
+        return decode_bitwise_pids(response)
 
     def vehicle_id_number(self):
         """
