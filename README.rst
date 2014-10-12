@@ -61,7 +61,7 @@ See LICENSE_ for details.
 .. |version| image:: https://badge.fury.io/py/shadetree.svg
     :target: https://pypi.python.org/pypi/shadetree/
 
-.. |build| image:: https://api.travis-ci.org/corbinbs/shadetree.svg
+.. |build| image:: https://travis-ci.org/corbinbs/shadetree.svg?branch=master
     :target: https://travis-ci.org/corbinbs/shadetree
 
 .. |wheel| image:: https://pypip.in/wheel/shadetree/badge.png
