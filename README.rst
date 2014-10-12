@@ -1,4 +1,4 @@
-|version| |wheel|
+|build| |version| |wheel|
 
 ShadeTree OBD
 =============
@@ -29,8 +29,17 @@ Quick start
 
 .. code-block:: python
 
-    import shadetree
+    from shadetree.obd.scanner import OBDScanner
 
+    with OBDScanner() as obd:
+        print('ELM version'.format(obd.elm_version))
+        print('Vehicle Identification Number (VIN): {0}'.format(obd.vehicle_id_number()))
+        print('Engine Control Unit (ECU) Name: {0}'.format(obd.ecu_name()))
+        print('Battery voltage: {0}'.format(obd.battery_voltage()))
+        print('Fuel type: {0}'.format(obd.fuel_type()))
+        print('Coolant temp: {0}'.format(obd.current_engine_coolant_temperature()))
+        print('Oil temp: {0}'.format(obd.current_engine_oil_temperature()))
+        print('Engine RPM: {0}'.format(obd.current_engine_rpm()))
 
 Supported Python Versions
 -------------------------
@@ -52,8 +61,8 @@ See LICENSE_ for details.
 .. |version| image:: https://badge.fury.io/py/shadetree.svg
     :target: https://pypi.python.org/pypi/shadetree/
 
-.. .. |build| image:: https://api.travis-ci.org/hub-ology/shadetree.svg
-    :target: https://travis-ci.org/hub-ology/shadetree
+.. |build| image:: https://api.travis-ci.org/corbinbs/shadetree.svg
+    :target: https://travis-ci.org/corbinbs/shadetree
 
 .. |wheel| image:: https://pypip.in/wheel/shadetree/badge.png
     :target: https://pypi.python.org/pypi/shadetree/
