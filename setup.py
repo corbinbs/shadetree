@@ -28,7 +28,8 @@ setup(
         "pyserial>=2.7"
     ],
     tests_require=[
-        "nose"
+        "nose",
+        "tox"
     ],
     test_suite = 'nose.collector',
     keywords = ['obd', 'obdii', 'automotive'],
